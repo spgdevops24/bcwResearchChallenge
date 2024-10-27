@@ -1,6 +1,6 @@
 locals {
-  project_id = "YOUR_PROJECT_ID"
-  region     = "YOUUR_REGION"
+  project_id = var.project_id
+  region     = var.region
   default_labels = {
     managed-by = "terraform"
   }
@@ -15,9 +15,10 @@ terraform {
     }
   }
 
-  backend "gcs" {
-    bucket = "YOUR_BUCKET"
-  }
+  # backend "gcs" {
+  #   bucket = "bcw-challenge-tf-state-bucket"
+  #   prefix  = "terraform/state"
+  # }
 }
 
 
@@ -33,4 +34,5 @@ provider "google-beta" {
 
 data "google_project" "this" {}
 
+# This data block will fetch default service account
 data "google_compute_default_service_account" "default" {}

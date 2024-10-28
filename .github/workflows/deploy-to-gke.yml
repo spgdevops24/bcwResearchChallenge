@@ -3,7 +3,7 @@ name: Deploy to GKE with Helm
 on:
   push:
     branches:
-      - main  # Trigger deployment on push to main branch
+      - main
 
 jobs:
   deploy:
@@ -13,18 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # - name: Set up Google Cloud SDK
-    #   uses: google-github-actions/setup-gcloud@v1
-    #   with:
-    #     project_id: ${{ secrets.GCP_PROJECT_ID }}
-    #     service_account_key: ${{ secrets.GCP_SA_KEY }}
-    #     export_default_credentials: true
-
-    # - name: Set up Kubernetes credentials
-    #   run: |
-    #     gcloud auth login
-    #     gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --region ${{ secrets.GKE_CLUSTER_LOCATION }}
-    
     - name: Install Google Cloud SDK
       run: |
         echo "Installing Google Cloud SDK..."
@@ -34,12 +22,19 @@ jobs:
         sudo apt-get update && sudo apt-get install -y google-cloud-sdk
 
     - name: Authenticate to Google Cloud
-      env:
-        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
       run: |
         echo "${GCP_SA_KEY}" > /tmp/gcp_key.json
         gcloud auth activate-service-account --key-file=/tmp/gcp_key.json
         gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+
+    - name: Set up Kubernetes credentials
+      run: |
+        gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --region ${{ secrets.GKE_CLUSTER_LOCATION }}
+        kubectl config current-context   # Verifies if context is set correctly
+
+    - name: Verify Connection to GKE
+      run: |
+        kubectl get nodes  # This confirms if the cluster is reachable
 
     - name: Install Helm
       run: |
@@ -49,6 +44,8 @@ jobs:
       env:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       run: |
+        # Ensure default namespace exists, otherwise create it
+        kubectl create namespace default || true
         helm upgrade --install hello-web3 ./helm/helloWeb3 \
           --namespace default \
           --set image.repository=gcr.io/$GCP_PROJECT_ID/bcw-research-app \
@@ -57,3 +54,6 @@ jobs:
           --set service.type=LoadBalancer \
           --set metrics.enabled=true \
           --set metrics.port=3000
+
+    - name: Clean up
+      run: rm /tmp/gcp_key.json

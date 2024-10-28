@@ -20,7 +20,6 @@ jobs:
       env:
         GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
       run: |
-        echo "${GCP_SA_KEY}"
         echo "${GCP_SA_KEY}"  > /tmp/gcp_key.json
         gcloud auth activate-service-account --key-file=/tmp/gcp_key.json
         gcloud auth configure-docker --quiet
@@ -31,7 +30,7 @@ jobs:
         IMAGE_NAME: "bcw-research-app"
         POLYGONSCAN_API_KEY: ${{ secrets.POLYGONSCAN_API_KEY }}
       run: |
-        docker build --build-arg POLYGONSCAN_API_KEY=${{ secrets.POLYGONSCAN_API_KEY }} -t gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:latest -f ../../../Dockerfile
+        docker build --build-arg POLYGONSCAN_API_KEY=${{ secrets.POLYGONSCAN_API_KEY }} -t gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:latest -f ../../../Dockerfile .
         docker push gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:latest
 
     - name: Clean up

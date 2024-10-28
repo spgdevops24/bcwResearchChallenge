@@ -47,14 +47,13 @@ There are two GitHub Actions workflows created to perform the following tasks:
 
 ### 4. Monitoring Setup with Prometheus and Grafana
 The GitHub Actions workflow: 'deploy-to-gke.yml' also deploys Prometheus and Grafana to the GKE cluster. Prometheus is configured to scrape metrics from the Node.js application, and Grafana is set up to visualize these metrics.
----
 
 ## Access Details
 
 ### Application Access
 
 - **Application URL**: `http://35.241.77.216:8080/`
-  -
+  
 - **Metrics Endpoint**: `http://35.241.77.216:3000/metrics`
 
 
@@ -64,7 +63,6 @@ The GitHub Actions workflow: 'deploy-to-gke.yml' also deploys Prometheus and Gra
   - Access Prometheus to view raw metrics and configure further custom monitoring rules if needed.
 
 
----
 
 ## Summary
 

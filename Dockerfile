@@ -1,4 +1,4 @@
-FROM node:alpine3.17
+FROM node:18-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -11,8 +11,9 @@ ARG POLYGONSCAN_API_KEY
 ENV API_KEY=$POLYGONSCAN_API_KEY
 
 # Install dependencies
-RUN npm install
-
+COPY node_modules ./node_modules
+#RUN npm install
+ 
 # Expose the application on port 3000
 EXPOSE 3000
 

@@ -1,4 +1,3 @@
-
 resource "google_artifact_registry_repository" "gcr_repo" {
   provider = google-beta
   project  = var.project_id

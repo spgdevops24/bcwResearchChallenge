@@ -1,0 +1,36 @@
+name: Build and Push Docker Image to GCR
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main branch
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Google Cloud Registry
+      env:
+        GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+      run: |
+        echo "${GCP_SA_KEY}" | base64 --decode > /tmp/gcp_key.json
+        gcloud auth activate-service-account --key-file=/tmp/gcp_key.json
+        gcloud auth configure-docker --quiet
+
+    - name: Build and Push Docker image to GCR
+      env:
+        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+        IMAGE_NAME: "bcw-research-app"
+      run: |
+        docker build -t gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:latest .
+        docker push gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:latest
+
+    - name: Clean up
+      run: rm /tmp/gcp_key.json

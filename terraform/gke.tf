@@ -39,6 +39,6 @@ resource "google_container_node_pool" "app_pool" {
     # Autoscaling configs
     autoscaling {
       min_node_count = 1
-      max_node_count = 3
+      max_node_count = 1 # change to 3 after test
     }
 }

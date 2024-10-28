@@ -23,6 +23,18 @@ resource "google_compute_subnetwork" "gke_subnet" {
   }
 }
 
+resource "google_compute_firewall" "allow_gke_app_traffic" {
+  name    = "allow-gke-app-traffic"
+  network = google_compute_network.vpc_network.self_link
 
+  allow {
+    protocol = "tcp"
+    ports    = ["3000"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]  # Allows access from any IP
+  target_tags   = ["gke-app"]    # Use this tag to specify GKE nodes
+  description   = "Allow incoming traffic to GKE application on port 3000"
+}
 
 ###Aditional configuration candidate might fined usefull to add

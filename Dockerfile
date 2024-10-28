@@ -15,7 +15,7 @@ COPY node_modules ./node_modules
 #RUN npm install
  
 # Expose the application on port 8080
-EXPOSE 8080
+EXPOSE 8080 3000
 
 # Run the application
 CMD [ "node", "app.js" ]

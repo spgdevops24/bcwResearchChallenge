@@ -18,7 +18,7 @@ replicaCount: 3
 # Service settings
 service:
   type: LoadBalancer
-  port: 3000
+  port: 8080
 
 # Ingress settings
 ingress:

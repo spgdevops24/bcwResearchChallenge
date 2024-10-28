@@ -14,8 +14,8 @@ ENV API_KEY=$POLYGONSCAN_API_KEY
 COPY node_modules ./node_modules
 #RUN npm install
  
-# Expose the application on port 3000
-EXPOSE 3000
+# Expose the application on port 8080
+EXPOSE 8080
 
 # Run the application
 CMD [ "node", "app.js" ]

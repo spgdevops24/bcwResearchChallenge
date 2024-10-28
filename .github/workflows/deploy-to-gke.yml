@@ -56,10 +56,10 @@ jobs:
           --namespace default \
           --set image.repository=gcr.io/$GCP_PROJECT_ID/bcw-research-app \
           --set image.tag=latest \
-          --set service.port=3000 \
+          --set service.port=8080 \
           --set service.type=LoadBalancer \
           --set metrics.enabled=true \
-          --set metrics.port=3000
+          --set metrics.port=8080
 
     - name: Clean up
       run: rm /tmp/gcp_key.json

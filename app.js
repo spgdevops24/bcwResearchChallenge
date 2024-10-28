@@ -54,8 +54,8 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
+server.listen(8080, () => {
+  console.log("Server is running on http://localhost:8080");
   updateMetrics();
-  console.log("Metrics are available on http://localhost:3000/metrics");
+  console.log("Metrics are available on http://localhost:8080/metrics");
 });

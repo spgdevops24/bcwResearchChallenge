@@ -4,11 +4,14 @@ metadata:
   name: {{ include "helloWeb3.fullname" . }}
   labels:
     {{- include "helloWeb3.labels" . | nindent 4 }}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "3000"
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: 3000
       protocol: TCP
       name: http
   selector:

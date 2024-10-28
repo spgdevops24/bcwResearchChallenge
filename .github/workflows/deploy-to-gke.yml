@@ -61,5 +61,41 @@ jobs:
           --set metrics.enabled=true \
           --set metrics.port=3000
 
+    - name: Wait for External IP
+      run: |
+        # Wait for external IP to be assigned
+        for i in {1..10}; do
+          EXTERNAL_IP=$(kubectl get svc hello-web3-helloweb3 -n default -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          if [ -n "$EXTERNAL_IP" ]; then
+            echo "External IP assigned: $EXTERNAL_IP"
+            echo "EXTERNAL_IP=$EXTERNAL_IP" >> $GITHUB_ENV
+            break
+          fi
+          echo "Waiting for external IP..."
+          sleep 15
+        done
+
+    - name: Deploy Prometheus
+      run: |
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo update
+        helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
+          --namespace monitoring --create-namespace \
+          --set additionalScrapeConfigs[0].job_name=helloweb3_app \
+          --set additionalScrapeConfigs[0].scrape_interval=60s \
+          --set additionalScrapeConfigs[0].static_configs[0].targets[0]="${{ env.EXTERNAL_IP }}:3000"
+
+    - name: Deploy Grafana
+      run: |
+        helm repo add grafana https://grafana.github.io/helm-charts
+        helm repo update
+        helm upgrade --install grafana grafana/grafana \
+          --namespace grafana --create-namespace \
+          --set service.type=LoadBalancer \
+          --set service.port=80
+
+    - name: Apply ServiceMonitor for app.js App
+      run: kubectl apply -f kubernetes/servicemonitor.yaml
+    
     - name: Clean up
       run: rm /tmp/gcp_key.json

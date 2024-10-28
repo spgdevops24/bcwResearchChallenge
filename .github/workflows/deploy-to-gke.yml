@@ -35,7 +35,7 @@ jobs:
 
     - name: Set up Kubernetes credentials
       env:
-        GCP_REGION: ${{ secrets.GKE_CLUSTER_LOCATION }}
+        GKE_CLUSTER_LOCATION: ${{ secrets.GKE_CLUSTER_LOCATION }}
       run: |
         gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --location $GKE_CLUSTER_LOCATION
         kubectl config current-context  # Verifies if context is set correctly

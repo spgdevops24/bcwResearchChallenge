@@ -29,7 +29,7 @@ resource "google_compute_firewall" "allow_gke_app_traffic" {
 
   allow {
     protocol = "tcp"
-    ports    = ["3000", "8080"]
+    ports    = ["3000", "8080", "80", "443", "9090"]
   }
 
   source_ranges = ["0.0.0.0/0"]  # Allows access from any IP

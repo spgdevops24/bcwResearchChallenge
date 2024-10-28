@@ -1,63 +1,65 @@
-# SRE/Devops Challenge
+# Setup and Access Documentation for GKE Node.js Application Monitoring
+
+This documentation provides a detailed guide on setting up, deploying, and accessing a Node.js application on Google Kubernetes Engine (GKE), with monitoring enabled via Prometheus and Grafana.
 
 ## Overview
-This challenge involves deploying a Node.js application that monitors the Polygon blockchain's block height on Google Kubernetes Engine (GKE) using Terraform and CI/CD. The task will assess your skills in cloud infrastructure management, container orchestration, application deployment, monitoring, and automation.
+
+This project involves the deployment of a Node.js application that tracks the latest block height on the Polygon blockchain. The application is containerized with Docker, deployed to a GKE cluster, and configured for automated monitoring and visualization using Prometheus and Grafana.
 
 ## Prerequisites
-- API Key from polygonscan.com (it is free)  https://polygonscan.com/register
-- Get Access to Google Cloud Platform (GCP) and the claim $300 free credits
-    https://cloud.google.com/free/docs/gcp-free-tier/#free-trial.
-- Familiarity with Terraform, Kubernetes, Docker, Helm, Prometheus, Grafana, and GitHub Actions.
 
-## Objectives
-- Provision a GKE cluster in a dedicated VPC using Terraform.
-- Containerize and deploy a provided Node.js application to GKE.
-- Set up Prometheus and Grafana in the cluster for monitoring.
-- Ensure the application and Grafana dashboard are publicly accessible.
+- **Google Cloud Platform (GCP) Account**: Ensure access to a GCP account and $300 free credits.
+- **PolygonScan API Key**: Register at polygonscan.com to obtain a free API key for accessing Polygon blockchain data.
+- **GitHub Repository**: Required for CI/CD integration using GitHub Actions.
 
-## Task Details
+---
 
-### 1. GCP Project Setup
-- Create a new project on GCP.
-- Claim the $300 free credits.
+## Setup Process
 
-### 2. Terraform Setup for GKE
-- Use existing Terraform modules or create a minimal setup for provisioning a VPC and GKE cluster.
-- Optionally, set up an IAM role for a read-only Kubernetes user.
+### 1. GCP Project and Free Tier Setup
 
-### 3. Node.js Application Setup
-- Fork or clone the [BCWResearch/HelloWeb3](https://github.com/BCWResearch/HelloWeb3) repository.
-- Register for an API key from [PolygonScan](https://polygonscan.com/).
-- Create a Dockerfile for the application.
-- Set up a CI/CD pipeline with GitHub Actions for building and pushing the Docker image.
+1. **Create a New GCP Project**: Log in to Google Cloud Console, create a new project, and enable billing to claim the free credits.
+2. **API and Service Enablement**: Enable essential APIs, including Kubernetes Engine API, Container Registry API, and Compute Engine API.
 
-### 4. Helm Chart and Deployment
-- Develop a Helm chart for the application.
-- Deploy the application to GKE using CI/CD.
-- Ensure public accessibility and metrics exposure on port 3000.
+### 2. GKE Cluster Setup with Terraform
 
-### 5. Prometheus and Grafana Deployment
-- Deploy Prometheus in the GKE cluster.
-- Deploy Grafana with external access (IP or DNS) and SSL.
-- Configure Grafana for metrics visualization.
+1. **Provision VPC and GKE Cluster**: Using Terraform, set up a dedicated VPC, subnet, and GKE cluster to host the application. 
 
-## Deliverables
-- A GitHub repository with Dockerfile, Helm chart, CI/CD configuration, and Terraform code.
-- Public URLs for the application and Grafana dashboard.
-- Documentation on the setup process and access details.
+NOTE: The configuration required creating a IAM Service Account with necessary IAM roles and permissions as a pre-requisite to using Terraform to create the GCP VPC network and GKE cluster.
 
-## Evaluation Criteria
-- Application deployment functionality.
-- Metrics integration in Grafana.
-- Best practices in Terraform, Kubernetes, monitoring, and CI/CD.
-- Documentation quality.
+2. **Terraform Deployment**: 
+A BASH script named as 'terraform_run.sh' is created to run Terraform commands to initialize and apply configurations, which create and configure the required infrastructure accordingly.
+IMPORTANT:  Before the bash script is executed, please ensure that you have activated your connection with GCP. Alternatively, you use your service accounts key to connect to GCP via command like this one: 
+        export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/key.json
 
-## Additional Resources
-- Terraform, GitHub CI, and Helm references are provided in this repository to illustrate the basic structure. Feel free to modify these as needed.
+### 3. CI/CD Pipeline Configuration with GitHub Actions
 
-## Submission Guidelines
-- Ensure all deliverables are committed to your repository.
-- Provide clear documentation in the repository.
-- Submit the repository URL upon completion.
+There are two GitHub Actions workflows created to perform the following tasks:
+1. workflow: 'docker-push-gcr.yml' => to automate docker container build and push to Google Container Registry (GCR).
+2. workflow: 'deploy-to-gke.yml' => to deploy the app to GKE with Helm chart.
 
-Good luck!
+
+### 4. Monitoring Setup with Prometheus and Grafana
+The GitHub Actions workflow: 'deploy-to-gke.yml' also deploys Prometheus and Grafana to the GKE cluster. Prometheus is configured to scrape metrics from the Node.js application, and Grafana is set up to visualize these metrics.
+---
+
+## Access Details
+
+### Application Access
+
+- **Application URL**: `http://35.241.77.216:8080/`
+  -
+- **Metrics Endpoint**: `http://35.241.77.216:3000/metrics`
+
+
+### Prometheus Access
+
+- **Prometheus URL**: `http://10.2.64.216:9090`
+  - Access Prometheus to view raw metrics and configure further custom monitoring rules if needed.
+
+
+---
+
+## Summary
+
+This setup enables a fully automated deployment pipeline with monitoring for a Node.js application running on GKE. The configuration provides real-time metrics via Prometheus and visualization through Grafana, ensuring high observability and reliability of the application.

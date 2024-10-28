@@ -52,8 +52,6 @@ jobs:
       env:
         GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       run: |
-        # Ensure default namespace exists, otherwise create it
-        kubectl create namespace default || true
         helm upgrade --install hello-web3 ./helm/helloWeb3 \
           --namespace default \
           --set image.repository=gcr.io/$GCP_PROJECT_ID/bcw-research-app \

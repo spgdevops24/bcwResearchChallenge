@@ -30,7 +30,7 @@ jobs:
         IMAGE_NAME: "bcw-research-app"
         POLYGONSCAN_API_KEY: ${{ secrets.POLYGONSCAN_API_KEY }}
       run: |
-        docker build  -t gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:latest .
+        docker build --build-arg POLYGONSCAN_API_KEY=${{ secrets.POLYGONSCAN_API_KEY }} -t gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:latest -f ../../../Dockerfile
         docker push gcr.io/$GCP_PROJECT_ID/$IMAGE_NAME:latest
 
     - name: Clean up

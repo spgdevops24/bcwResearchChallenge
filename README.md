@@ -55,7 +55,7 @@ The GitHub Actions workflow: 'deploy-to-gke.yml' also deploys Prometheus and Gra
 
 - **Application URL**: `http://35.241.77.216:8080/`
   -
-- **Metrics Endpoint**: `http://35.241.77.216:8080/metrics`
+- **Metrics Endpoint**: `http://35.241.77.216:3000/metrics`
 
 
 ### Prometheus Access

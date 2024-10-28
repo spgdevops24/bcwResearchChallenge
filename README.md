@@ -57,9 +57,9 @@ The GitHub Actions workflow: 'deploy-to-gke.yml' also deploys Prometheus and Gra
 - **Metrics Endpoint**: `http://35.241.77.216:3000/metrics`
 
 
-### Prometheus Access
+### Grafana Access
 
-- **Prometheus URL**: `http://10.2.64.216:9090`
+- **Grafana URL**: `http:/35.241.120.225:80`
   - Access Prometheus to view raw metrics and configure further custom monitoring rules if needed.
 
 

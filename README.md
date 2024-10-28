@@ -29,8 +29,14 @@ NOTE: The configuration required creating a IAM Service Account with necessary I
 
 2. **Terraform Deployment**: 
 A BASH script named as 'terraform_run.sh' is created to run Terraform commands to initialize and apply configurations, which create and configure the required infrastructure accordingly.
+*** Replace -var-file=xyz.txt with your variables file and/or if you wish to use 'terraform.tfvars' instead then remove -var-file argument from the terrafor_run.sh script in line No. 40,49 and 55.
+
 IMPORTANT:  Before the bash script is executed, please ensure that you have activated your connection with GCP. Alternatively, you use your service accounts key to connect to GCP via command like this one: 
         export GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/key.json
+Also, it is must to provide values to the following variables in the 'terraform.tfvars' file, for ex-: 
+    credentials_path="/path/to/your/sa/key.json"
+    project_id="argon-framing-xxxxxx-xx"
+    region="asia-east2"
 
 ### 3. CI/CD Pipeline Configuration with GitHub Actions
 
@@ -49,7 +55,7 @@ The GitHub Actions workflow: 'deploy-to-gke.yml' also deploys Prometheus and Gra
 
 - **Application URL**: `http://35.241.77.216:8080/`
   -
-- **Metrics Endpoint**: `http://35.241.77.216:3000/metrics`
+- **Metrics Endpoint**: `http://35.241.77.216:8080/metrics`
 
 
 ### Prometheus Access

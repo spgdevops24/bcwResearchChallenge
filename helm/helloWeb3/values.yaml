@@ -23,10 +23,10 @@ service:
 # Ingress settings
 ingress:
   enabled: true
-  className: ""
+  className: "gce"
   annotations: {}
   hosts:
-    - host: "chart-example.local"
+    - host: ""
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -34,7 +34,7 @@ ingress:
 
 # Autoscaling settings
 autoscaling:
-  enabled: false
+  enabled: true
   minReplicas: 1
   maxReplicas: 5
   targetCPUUtilizationPercentage: 80

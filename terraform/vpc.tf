@@ -29,12 +29,12 @@ resource "google_compute_firewall" "allow_gke_app_traffic" {
 
   allow {
     protocol = "tcp"
-    ports    = ["3000"]
+    ports    = ["3000", "8080"]
   }
 
   source_ranges = ["0.0.0.0/0"]  # Allows access from any IP
   target_tags   = ["gke-app"]    # Use this tag to specify GKE nodes
-  description   = "Allow incoming traffic to GKE application on port 3000"
+  description   = "Allow incoming traffic to GKE application on ports 8080 and 3000"
 }
 
 ###Aditional configuration candidate might fined usefull to add

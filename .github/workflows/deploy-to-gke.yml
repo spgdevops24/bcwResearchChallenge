@@ -1,0 +1,42 @@
+name: Deploy to GKE with Helm
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Set up Kubernetes credentials
+      run: |
+        gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --region ${{ secrets.GCP_REGION }}
+
+    - name: Install Helm
+      run: |
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+    - name: Deploy to GKE with Helm
+      env:
+        GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      run: |
+        helm upgrade --install hello-web3 ./helm/helloWeb3 \
+          --namespace default \
+          --set image.repository=gcr.io/$GCP_PROJECT_ID/bcw-research-app \
+          --set image.tag=latest \
+          --set service.port=3000 \
+          --set service.type=LoadBalancer \
+          --set metrics.enabled=true \
+          --set metrics.port=3000

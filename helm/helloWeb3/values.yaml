@@ -1,82 +1,77 @@
-# Default values for helloWeb3.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-replicaCount: 1
-
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
-imagePullSecrets: []
+# General settings
 nameOverride: ""
 fullnameOverride: ""
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+gcp:
+  project_id: ""
 
-podAnnotations: {}
+# Image settings
+image:
+  repository: "gcr.io/{{ .Values.gcp.project_id }}/{{ .Values.image.name }}"
+  name: "bcw-research-app"
+  pullPolicy: IfNotPresent
+  tag: "latest"
 
-podSecurityContext: {}
-  # fsGroup: 2000
+# Replica settings
+replicaCount: 3
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
+# Service settings
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
 
+# Ingress settings
 ingress:
-  enabled: false
+  enabled: true
   className: ""
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: chart-example.local
+    - host: "chart-example.local"
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
+# Autoscaling settings
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 5
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
 
+# Resource requests and limits
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+# Pod and container security contexts
+podSecurityContext: {}
+securityContext: {}
+
+# Pod annotations (for metrics scraping, etc.)
+podAnnotations: {}
+
+# Node selector, affinity, and tolerations
 nodeSelector: {}
-
+affinity: {}
 tolerations: []
 
-affinity: {}
+# Service account settings
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+# Image pull secrets
+imagePullSecrets: []
+
+# Metrics configuration
+metrics:
+  enabled: true
+  port: 3000
+

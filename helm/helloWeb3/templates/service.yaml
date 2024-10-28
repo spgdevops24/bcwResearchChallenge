@@ -14,5 +14,9 @@ spec:
       targetPort: 8080
       protocol: TCP
       name: http
+    - port: {{ .Values.metrics.port }}
+      targetPort: 3000
+      protocol: TCP
+      name: metrics
   selector:
     {{- include "helloWeb3.selectorLabels" . | nindent 4 }}

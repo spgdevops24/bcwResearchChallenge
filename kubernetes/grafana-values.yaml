@@ -1,0 +1,33 @@
+# kubernetes/grafana-values.yaml
+service:
+  type: LoadBalancer
+  port: 443
+  targetPort: 3000
+
+ingress:
+  enabled: false  # Set to false since we're using LoadBalancer directly
+
+persistence:
+  enabled: true
+  storageClassName: "standard"
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+
+adminUser: "admin"
+adminPassword: "admin_password"  
+
+# Configure SSL (using Kubernetes secrets with self-signed cert or other)
+extraContainers:
+  - name: certs
+    image: nginx:latest
+    volumeMounts:
+      - mountPath: "/etc/ssl/certs"
+        name: ssl-cert
+extraVolumeMounts:
+  - name: ssl-cert
+    mountPath: "/etc/ssl/certs"
+volumes:
+  - name: ssl-cert
+    secret:
+      secretName: "grafana-ssl"  

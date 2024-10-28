@@ -1,0 +1,12 @@
+# kubernetes/prometheus-values.yaml
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    podMonitorSelector: {}
+
+# Expose Prometheus externally (optional)
+server:
+  service:
+    type: LoadBalancer
+    port: 9090

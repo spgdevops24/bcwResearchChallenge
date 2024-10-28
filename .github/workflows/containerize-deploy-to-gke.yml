@@ -34,63 +34,63 @@ jobs:
           docker build --build-arg POLYGONSCAN_API_KEY=${{ secrets.POLYGONSCAN_API_KEY }} -t $IMAGE_NAME .
           docker push $IMAGE_NAME
 
-      # Step 5: Configure kubectl to access GKE cluster
-      - name: Configure kubectl to Access GKE Cluster
-        env:
-          GKE_CLUSTER_NAME: ${{ secrets.GKE_CLUSTER_NAME }}
-          GKE_CLUSTER_LOCATION: ${{ secrets.GKE_CLUSTER_LOCATION }}
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-        run: |
-          gcloud container clusters get-credentials $GKE_CLUSTER_NAME --location $GKE_CLUSTER_LOCATION --project $GCP_PROJECT_ID
+      # # Step 5: Configure kubectl to access GKE cluster
+      # - name: Configure kubectl to Access GKE Cluster
+      #   env:
+      #     GKE_CLUSTER_NAME: ${{ secrets.GKE_CLUSTER_NAME }}
+      #     GKE_CLUSTER_LOCATION: ${{ secrets.GKE_CLUSTER_LOCATION }}
+      #     GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      #   run: |
+      #     gcloud container clusters get-credentials $GKE_CLUSTER_NAME --location $GKE_CLUSTER_LOCATION --project $GCP_PROJECT_ID
 
-      # Step 6: Deploy to GKE
-      - name: Deploy to GKE
-        env:
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-        run: |
-          # Define Kubernetes deployment manifest
-          cat <<EOF > k8s-deployment.yml
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: bcw-research-app
-          spec:
-            replicas: 1
-            selector:
-              matchLabels:
-                app: bcw-research-app
-            template:
-              metadata:
-                labels:
-                  app: bcw-research-app
-              spec:
-                containers:
-                - name: bcw-research-app
-                  image: gcr.io/${GCP_PROJECT_ID}/bcw-research-app:latest
-                  ports:
-                  - containerPort: 3000
-          EOF
+      # # Step 6: Deploy to GKE
+      # - name: Deploy to GKE
+      #   env:
+      #     GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      #   run: |
+      #     # Define Kubernetes deployment manifest
+      #     cat <<EOF > k8s-deployment.yml
+      #     apiVersion: apps/v1
+      #     kind: Deployment
+      #     metadata:
+      #       name: bcw-research-app
+      #     spec:
+      #       replicas: 1
+      #       selector:
+      #         matchLabels:
+      #           app: bcw-research-app
+      #       template:
+      #         metadata:
+      #           labels:
+      #             app: bcw-research-app
+      #         spec:
+      #           containers:
+      #           - name: bcw-research-app
+      #             image: gcr.io/${GCP_PROJECT_ID}/bcw-research-app:latest
+      #             ports:
+      #             - containerPort: 3000
+      #     EOF
 
-          # Define Kubernetes service manifest
-          cat <<EOF > k8s-service.yml
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: bcw-research-app-service
-          spec:
-            type: LoadBalancer
-            selector:
-              app: bcw-research-app
-            ports:
-            - protocol: TCP
-              port: 80
-              targetPort: 3000
-          EOF
+      #     # Define Kubernetes service manifest
+      #     cat <<EOF > k8s-service.yml
+      #     apiVersion: v1
+      #     kind: Service
+      #     metadata:
+      #       name: bcw-research-app-service
+      #     spec:
+      #       type: LoadBalancer
+      #       selector:
+      #         app: bcw-research-app
+      #       ports:
+      #       - protocol: TCP
+      #         port: 80
+      #         targetPort: 3000
+      #     EOF
 
-          # Apply the Kubernetes manifests
-          kubectl apply -f k8s-deployment.yml
-          kubectl apply -f k8s-service.yml
+      #     # Apply the Kubernetes manifests
+      #     kubectl apply -f k8s-deployment.yml
+      #     kubectl apply -f k8s-service.yml
 
-      # Step 7: Verify Deployment
-      - name: Verify Deployment
-        run: kubectl get all
+      # # Step 7: Verify Deployment
+      # - name: Verify Deployment
+      #   run: kubectl get all

@@ -14,7 +14,6 @@ terraform {
       version = "~> 5.2"
     }
   }
-
 }
 
 provider "google" {

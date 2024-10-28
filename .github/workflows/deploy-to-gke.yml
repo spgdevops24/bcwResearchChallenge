@@ -22,7 +22,7 @@ jobs:
 
     - name: Set up Kubernetes credentials
       run: |
-        gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --region ${{ secrets.GCP_REGION }}
+        gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --region ${{ secrets.GKE_CLUSTER_LOCATION }}
 
     - name: Install Helm
       run: |

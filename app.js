@@ -42,21 +42,52 @@ function updateMetrics() {
 const interval = 60000;
 setInterval(updateMetrics, interval);
 
-const server = http.createServer((req, res) => {
+// const server = http.createServer((req, res) => {
+//   if (req.url === "/metrics") {
+//     res.setHeader("Content-Type", register.contentType);
+//     register.metrics().then((metrics) => {
+//       res.end(metrics);
+//     });
+//   } else {
+//     res.writeHead(200);
+//     res.end("Server Running");
+//   }
+// });
+
+// server.listen(8080, () => {
+//   console.log("Server is running on http://localhost:8080");
+//   updateMetrics();
+//   console.log("Metrics are available on http://localhost:3000/metrics");
+// });
+
+// Primary server for general application traffic on port 8080
+
+const appServer = http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end("Server Running on port 8080");
+});
+
+appServer.listen(8080, () => {
+  console.log("App server is running on http://localhost:8080");
+  updateMetrics();
+});
+
+// Separate server for metrics on port 3000
+const metricsServer = http.createServer((req, res) => {
   if (req.url === "/metrics") {
     res.setHeader("Content-Type", register.contentType);
     register.metrics().then((metrics) => {
       res.end(metrics);
+    }).catch((error) => {
+      res.writeHead(500);
+      res.end(`Error generating metrics: ${error}`);
     });
   } else {
-    res.writeHead(200);
-    res.end("Server Running");
+    res.writeHead(404);
+    res.end("Not Found");
   }
 });
 
-server.listen(8080, () => {
-  console.log("Server is running on http://localhost:8080");
-  updateMetrics();
-  console.log("Metrics are available on http://localhost:3000/metrics");
+metricsServer.listen(3000, () => {
+  console.log("Metrics server is running on http://localhost:3000/metrics");
 });
-
